@@ -264,6 +264,7 @@ struct fdisk_ask {
 
 struct fdisk_context {
 	int dev_fd;         /* device descriptor */
+	int readonly;       /* is the device read-only? */
 	char *dev_path;     /* device path */
 	unsigned char *firstsector; /* buffer with master boot record */
 

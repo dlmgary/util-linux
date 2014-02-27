@@ -45,6 +45,7 @@ struct fdisk_context *fdisk_new_nested_context(struct fdisk_context *parent,
 	DBG(LABEL, dbgprint("new context %p allocated", cxt));
 	cxt->dev_fd = parent->dev_fd;
 	cxt->parent = parent;
+	cxt->readonly = parent->readonly;
 
 	cxt->io_size =          parent->io_size;
 	cxt->optimal_io_size =  parent->optimal_io_size;
@@ -173,6 +174,7 @@ static void reset_context(struct fdisk_context *cxt)
 
 	/* initialize */
 	cxt->dev_fd = -1;
+	cxt->readonly = -1;
 	cxt->dev_path = NULL;
 	cxt->firstsector = NULL;
 
@@ -262,6 +264,7 @@ int fdisk_context_assign_device(struct fdisk_context *cxt,
 	}
 
 	cxt->dev_fd = fd;
+	cxt->readonly = readonly;
 	cxt->dev_path = strdup(fname);
 	if (!cxt->dev_path)
 		goto fail;
