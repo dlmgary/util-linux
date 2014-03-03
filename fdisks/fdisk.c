@@ -538,8 +538,16 @@ int main(int argc, char **argv)
 		fdisk_info(cxt, _("Changes will remain in memory only, until you decide to write them.\n"
 				  "Be careful before using the write command.\n"));
 
-		if (fdisk_context_assign_device(cxt, argv[optind], 0) != 0)
-			err(EXIT_FAILURE, _("cannot open %s"), argv[optind]);
+		if (fdisk_context_assign_device(cxt, argv[optind], 0) != 0) {
+			if (fdisk_context_assign_device(cxt, argv[optind], 1) != 0)
+				err(EXIT_FAILURE, _("cannot open %s"), argv[optind]);
+
+			fdisk_warnx(cxt, _(
+				  "Opening device in write mode failed, device "
+				  "is open in read-only mode.\nfdisk won't be "
+				  "able to write changes."));
+			assert(cxt->readonly);
+		}
 
 		fflush(stdout);
 
